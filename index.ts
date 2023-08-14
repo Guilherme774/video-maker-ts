@@ -5,6 +5,7 @@ import { textRobot } from "./robots/text";
 let content: Content = new Content();
 
 async function start() {
+    content.maximumSentences = 7;
     content.searchTerm = askAndReturnSearchTerm();
     content.prefix = askAndReturnPrefix();
     await textRobot(content);
