@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/Guilherme774/video-maker-ts#readme",
   "devDependencies": {
+    "@types/node": "^20.5.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
     "@types/readline-sync": "^1.4.4",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "wikijs": "^6.4.1"
   }
 }
