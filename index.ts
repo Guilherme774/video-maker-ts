@@ -1,11 +1,13 @@
 import { question, keyInSelect } from "readline-sync";
 import { Content } from "./models/content";
+import { textRobot } from "./robots/text";
 
 let content: Content = new Content();
 
-function start() {
+async function start() {
     content.searchTerm = askAndReturnSearchTerm();
     content.prefix = askAndReturnPrefix();
+    await textRobot(content);
 
     function askAndReturnSearchTerm() {
         return question('Type a Wikipedia search term: ');
