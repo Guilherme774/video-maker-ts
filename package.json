@@ -1,0 +1,26 @@
+{
+  "name": "video-maker-ts",
+  "version": "1.0.0",
+  "description": "Transcrição do projeto Vídeo Maker para Typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guilherme774/video-maker-ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Guilherme774/video-maker-ts/issues"
+  },
+  "homepage": "https://github.com/Guilherme774/video-maker-ts#readme",
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@types/readline-sync": "^1.4.4"
+  }
+}
