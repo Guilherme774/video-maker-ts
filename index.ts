@@ -1,28 +1,14 @@
-import { question, keyInSelect } from "readline-sync";
-import { Content } from "./models/content";
 import { textRobot } from "./robots/text";
-
-let content: Content = new Content();
+import { inputRobot } from "./robots/input";
+import { load } from "./robots/state";
 
 async function start() {
-    content.maximumSentences = 7;
-    content.searchTerm = askAndReturnSearchTerm();
-    content.prefix = askAndReturnPrefix();
-    await textRobot(content);
+    inputRobot();
+    await textRobot();
 
-    function askAndReturnSearchTerm() {
-        return question('Type a Wikipedia search term: ');
-    }
+    const content = load();
 
-    function askAndReturnPrefix() {
-        const prefixes = ['What is', 'Who is', 'The history of'];
-        const selectedPrefixIndex = keyInSelect(prefixes, 'Choose an option: ');
-        const selectedPrefixText = prefixes[selectedPrefixIndex];
-
-        return selectedPrefixText;
-    }
-
-    console.log(content);
+    console.dir(content, { depth: null });
 }
 
 start();

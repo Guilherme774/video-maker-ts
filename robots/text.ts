@@ -1,4 +1,5 @@
 import { Content } from "../models/content";
+import { save, load } from "./state";
 import wiki from 'wikijs';
 
 const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1');
@@ -12,11 +13,16 @@ const nlu = new NaturalLanguageUnderstandingV1({
 });
 
 
-export async function textRobot(content: Content) {
+export async function textRobot() {
+    const content: Content = load();
+
     await fetchContentFromWikipedia(content);
     breakContentIntoSentences(content);
     limitMaximumSentences(content);
     await fetchKeywordsOfAllSentences(content);
+
+    save(content);
+
 
     async function fetchContentFromWikipedia(content: Content) {
         const wikipediaResponse = (await wiki().page(content.searchTerm).then(page => page.summary())).toString();
