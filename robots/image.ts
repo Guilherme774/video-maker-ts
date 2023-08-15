@@ -21,7 +21,6 @@ export async function imageRobot() {
 
             $('img').each((index, element) => {
                 const imageUrl = $(element).attr('src');
-                const imageAlt = $(element).attr('alt');
 
                 if (imageUrl && imageUrl.startsWith('http') && counter <= 2) {
                   imageUrls.push(imageUrl);
