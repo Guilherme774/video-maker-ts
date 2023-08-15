@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@types/readline-sync": "^1.4.4",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "ibm-watson": "^8.0.0",
     "readline-sync": "^1.4.10",
     "sbd": "^1.0.19",
