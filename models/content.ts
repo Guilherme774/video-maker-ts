@@ -7,8 +7,8 @@ export class Content {
     maximumSentences: number = 0;
 }
 
-interface Sentence {
-    text: string;
-    keywords: string[];
-    images: string[];
+class Sentence {
+    text: string = '';
+    keywords: string[] = [];
+    images: string[] = [];
 }
