@@ -49,11 +49,11 @@ export async function imageRobot() {
                 const imageUrl = images[imageIndex];
 
                 try {
-                    if(content.downloadedImages.includes(imageUrl)) throw new Error('Image already downloaded!');
+                    if(content.downloadedImages.includes(imageUrl)) throw new Error('[!] Image already downloaded!');
 
                     await downloadAndSaveImage(imageUrl, `${sentenceIndex}-original.png`);
                     content.downloadedImages.push(imageUrl);
-                    console.log(`> [${sentenceIndex}][${imageIndex}] Image downloaded: ${imageUrl}`);
+                    console.log(`> [${sentenceIndex}][${imageIndex}] Image downloaded`);
                     break;
                 }
                 catch (error) {
