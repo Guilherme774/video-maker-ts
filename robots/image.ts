@@ -1,7 +1,9 @@
 import { save, load } from "./state";
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 import { Content } from "../models/content";
+
+const googleApiKey = require('../credentials/google.json');
+
 
 export async function imageRobot() {
     const content = load();
@@ -10,27 +12,17 @@ export async function imageRobot() {
 
     save(content);
 
-    async function fetchGoogleAndReturnImageLinks(query: string): Promise<string[]> {
-        let counter: number = 1;
-        const searchUrl = `https://www.google.com/search?q=${query}&tbm=isch`;
-
+    async function fetchGoogleAndReturnImageLinks(query: string) {
+        const url = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey.apikey}&cx=${googleApiKey.search_engine_id}&searchType=image&q=${encodeURIComponent(query)}&fileType=jpg&hq=true&num=2`;
+        
         try {
-            const response = await axios.get(searchUrl);
-            const $ = cheerio.load(response.data);
-            const imageUrls: string[] = [];
+            const response = await axios.get(url);
+            const imageResults = response.data.items;
 
-            $('img').each((index, element) => {
-                const imageUrl = $(element).attr('src');
-
-                if (imageUrl && imageUrl.startsWith('http') && counter <= 2) {
-                  imageUrls.push(imageUrl);
-                  counter++;
-                }
-              });
-          
-              return imageUrls;
+            const imageUrls = imageResults.map((item: any) => item.link);
+            return imageUrls;
         } catch (error) {
-            console.error('Erro ao buscar imagens:', error);
+            console.error('Error searching images:', error);
             return [];
         }
     }
@@ -44,3 +36,5 @@ export async function imageRobot() {
         }
     }
 }
+
+imageRobot();
