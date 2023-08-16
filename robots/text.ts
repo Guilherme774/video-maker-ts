@@ -16,6 +16,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
 export async function textRobot() {
     const content: Content = load();
 
+    console.log(`> Searching for ${content.searchTerm} on internet...`);
     await fetchContentFromWikipedia(content);
     breakContentIntoSentences(content);
     limitMaximumSentences(content);
