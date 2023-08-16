@@ -6,6 +6,7 @@ export class Content {
     sentences: Sentence[] = [];
     maximumSentences: number = 0;
     googleSearchQuery: string = '';
+    downloadedImages: string[] = [];
 }
 
 class Sentence {
