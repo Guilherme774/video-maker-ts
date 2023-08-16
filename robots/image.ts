@@ -1,6 +1,7 @@
 import { save, load } from "./state";
 import axios from 'axios';
 import { Content } from "../models/content";
+const imageDownloader = require('image-downloader');
 
 const googleApiKey = require('../credentials/google.json');
 
@@ -9,6 +10,7 @@ export async function imageRobot() {
     const content = load();
 
     await fetchImageOfAllSentences(content);
+    await downloadAllImages(content);
 
     save(content);
 
@@ -35,6 +37,36 @@ export async function imageRobot() {
             content.googleSearchQuery = query;
         }
     }
-}
 
-imageRobot();
+
+    async function downloadAllImages(content: Content) {
+        content.downloadedImages = [];
+
+        for(let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
+            const images = content.sentences[sentenceIndex].images;
+
+            for(let imageIndex = 0; imageIndex < images.length; imageIndex++) {
+                const imageUrl = images[imageIndex];
+
+                try {
+                    if(content.downloadedImages.includes(imageUrl)) throw new Error('Image already downloaded!');
+
+                    await downloadAndSaveImage(imageUrl, `${sentenceIndex}-original.png`);
+                    content.downloadedImages.push(imageUrl);
+                    console.log(`> [${sentenceIndex}][${imageIndex}] Image downloaded: ${imageUrl}`);
+                    break;
+                }
+                catch (error) {
+                    console.log(`> [${sentenceIndex}][${imageIndex}] Error to download: (${imageUrl}) : ${error}`);
+                }
+            }
+        }
+    }
+
+    async function downloadAndSaveImage(url: string, fileName: string) {
+        return imageDownloader.image({
+            url: url,
+            dest: `/sf/video-maker-ts/content/${fileName}`
+        })
+    }
+}
