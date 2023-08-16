@@ -9,7 +9,10 @@ const googleApiKey = require('../credentials/google.json');
 export async function imageRobot() {
     const content = load();
 
+    console.log(`> Searching for ${content.searchTerm} images...`);
     await fetchImageOfAllSentences(content);
+    
+    console.log('> Downloading images...');
     await downloadAllImages(content);
 
     save(content);
