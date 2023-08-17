@@ -18,17 +18,23 @@
   },
   "homepage": "https://github.com/Guilherme774/video-maker-ts#readme",
   "devDependencies": {
+    "@types/gm": "^1.25.1",
     "@types/node": "^20.5.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.17",
+    "@ffprobe-installer/ffprobe": "^1.0.10",
     "@types/readline-sync": "^1.4.4",
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
+    "fluent-ffmpeg": "^2.1.2",
+    "gm": "^1.25.0",
     "ibm-watson": "^8.0.0",
     "image-downloader": "^4.3.0",
     "readline-sync": "^1.4.10",
     "sbd": "^1.0.19",
+    "videoshow": "^0.1.11",
     "wikijs": "^6.4.1"
   }
 }

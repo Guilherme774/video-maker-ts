@@ -2,6 +2,7 @@ import { Content } from "../models/content";
 import { writeFileSync, readFileSync } from "fs";
 
 const contentFilePath = './content.json';
+const scriptFilePath = '../content/after-effects-script.js';
 
 export function save(content: Content) {
     const contentString = JSON.stringify(content);
