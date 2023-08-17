@@ -132,8 +132,8 @@ dist
 # credentials
 credentials/*.json
 
-# Data
+# Content
 content.json
-
-# Images
 content/*.png
+content/*.mp4
+content/*.mp3
