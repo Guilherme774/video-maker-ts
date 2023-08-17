@@ -12,9 +12,9 @@ ffmpeg.setFfprobePath(ffprobePath);
 export async function videoRobot() {
     const content: Content = load();
 
-    // await convertAllImages(content);
+    await convertAllImages(content);
     await createYouTubeThumbnail();
-    // await renderVideo(content);
+    await renderVideo(content);
 
     // save(content);
 
