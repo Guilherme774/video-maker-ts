@@ -4,7 +4,7 @@ A Typescript version from Filipe Deschamps Video Maker
 
 > Project Status: Under development ⚠️
 > <br>
-> Current Working: Implementing image downloader⚠️
+> Current Working: Video Rendering⚠️
 <br>
 
 
