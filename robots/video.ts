@@ -16,8 +16,6 @@ export async function videoRobot() {
     await createYouTubeThumbnail();
     await renderVideo(content);
 
-    // save(content);
-
 
     async function convertAllImages(content: Content) {
         console.log("> Editing images...");
@@ -57,7 +55,7 @@ export async function videoRobot() {
         
         return new Promise((resolve, reject) => {
             const filePath = '/sf/video-maker-ts/content/0-converted.png';
-            const outputPath = '/sf/video-maker-ts/content/0-thumbnail.png';
+            const outputPath = '/sf/video-maker-ts/content/youtube-thumbnail.jpg';
             const commandToExecThumbnail = `magick convert ${filePath} ${outputPath}`;
 
             exec(commandToExecThumbnail, (error, stdout, stderr) => {
