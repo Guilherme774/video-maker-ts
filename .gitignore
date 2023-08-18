@@ -135,5 +135,6 @@ credentials/*.json
 # Content
 content.json
 content/*.png
+content/youtube-thumbnail.jpg
 content/*.mp4
 content/*.mp3
