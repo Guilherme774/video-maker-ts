@@ -4,18 +4,21 @@ A Typescript version from Filipe Deschamps Video Maker
 
 > Project Status: Under development ⚠️
 > <br>
-> Current Working: Youtube Robot⚠️
+> Current Working: Final adjustments⚠️
 <br>
 
 
 <- Gif Here ->
 
+<br>
 
-### This is a video maker with Typescript, this robots get user input, search about on internet, sanitze the content response, break into sentences, extract the keywords from the sentences, search on google images based on the keywords with searchTerm, download the images results, treats the images and gives the user everything he will need to create a video, a job, a presentation, or everything else.
+## About
 
-### That is a very powerfull project and i tried to use the best developments, git and clean code practices.
+This is a video maker with Typescript, this robots get user input, search about on internet, sanitze the content response, break into sentences, extract the keywords from the sentences, search on google images based on the keywords with searchTerm, download the images results, treats the images and gives the user everything he will need to create a video, a job, a presentation, or everything else.
 
-### I performed the entire development flow, from the entity diagrams to the code itself, to get as close as possible to a real project. Based on Filipe Deschamps Video Maker project
+That is a very powerfull project and i tried to use the best developments, git and clean code practices.
+
+I performed the entire development flow, from the entity diagrams to the code itself, to get as close as possible to a real project. Based on Filipe Deschamps Video Maker project
 
 <br>
 
@@ -34,7 +37,7 @@ A Typescript version from Filipe Deschamps Video Maker
 
 <br>
 
-## Instalation and Usage:
+## Installation and Usage:
 
 1. Install NodeJS
 2. Clone this repository
