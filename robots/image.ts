@@ -1,7 +1,9 @@
 import { save, load } from "./state";
 import axios from 'axios';
 import { Content } from "../models/content";
+import { google } from "googleapis";
 const imageDownloader = require('image-downloader');
+const customSearch = google.customsearch('v1');
 
 const googleApiKey = require('../credentials/google.json');
 
@@ -9,35 +11,47 @@ const googleApiKey = require('../credentials/google.json');
 export async function imageRobot() {
     const content = load();
 
-    console.log(`> Searching for ${content.searchTerm} images...`);
+    console.log('> [video-root] Starting...');
     await fetchImageOfAllSentences(content);
     
-    console.log('> Downloading images...');
+    console.log('> [image-robot] Downloading images...');
     await downloadAllImages(content);
 
     save(content);
 
     async function fetchGoogleAndReturnImageLinks(query: string) {
-        const url = `https://www.googleapis.com/customsearch/v1?key=${googleApiKey.apikey}&cx=${googleApiKey.search_engine_id}&searchType=image&q=${encodeURIComponent(query)}&fileType=jpg&hq=true&num=2`;
-        
-        try {
-            const response = await axios.get(url);
-            const imageResults = response.data.items;
+        console.log(query);
 
-            const imageUrls = imageResults.map((item: any) => item.link);
-            return imageUrls;
-        } catch (error) {
-            console.error('Error searching images:', error);
-            return [];
-        }
+        const response = await customSearch.cse.list({
+            auth: googleApiKey.apikey,
+            cx: googleApiKey.search_engine_id,
+            q: query,
+            searchType: 'image',
+            num: 2
+        })
+
+        const imagesUrl: any = response.data.items?.map((item: any) => {
+            return item.link;
+        })
+
+        return imagesUrl;
     }
 
     async function fetchImageOfAllSentences(content: Content) {
-        for(let sentence of content.sentences) {
-            const query = `${content.searchTerm} ${sentence.keywords[0]}`
-            sentence.images = await fetchGoogleAndReturnImageLinks(query);
+        for(let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
+            let query: string;
 
-            content.googleSearchQuery = query;
+            if(sentenceIndex === 0) {
+                query = `${content.searchTerm}`
+            }
+            else {
+                query = `${content.searchTerm} ${content.sentences[sentenceIndex].keywords[0]}`
+            }
+
+            console.log(`> [image-robot] Querying Google Images with: "${query}"`);
+
+            content.sentences[sentenceIndex].images = await fetchGoogleAndReturnImageLinks(query);
+            content.sentences[sentenceIndex].googleSearchQuery = query;
         }
     }
 
@@ -52,18 +66,20 @@ export async function imageRobot() {
                 const imageUrl = images[imageIndex];
 
                 try {
-                    if(content.downloadedImages.includes(imageUrl)) throw new Error('[!] Image already downloaded!');
+                    if(content.downloadedImages.includes(imageUrl)) throw new Error('> [image-robot] [!] Image already downloaded!');
 
                     await downloadAndSaveImage(imageUrl, `${sentenceIndex}-original.png`);
                     content.downloadedImages.push(imageUrl);
-                    console.log(`> [${sentenceIndex}][${imageIndex}] Image downloaded`);
+                    console.log(`> [image-robot] [${sentenceIndex}][${imageIndex}] Image successfully downloaded`);
                     break;
                 }
                 catch (error) {
-                    console.log(`> [${sentenceIndex}][${imageIndex}] Error to download: (${imageUrl}) : ${error}`);
+                    console.log(`> [image-robot] [${sentenceIndex}][${imageIndex}] Error to download: (${imageUrl}) : ${error}`);
                 }
             }
         }
+
+        console.log('> [image-robot] Download completed!');
     }
 
     async function downloadAndSaveImage(url: string, fileName: string) {

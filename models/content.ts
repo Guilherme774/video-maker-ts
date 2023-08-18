@@ -5,7 +5,6 @@ export class Content {
     sourceContentSanitized: string = '';
     sentences: Sentence[] = [];
     maximumSentences: number = 0;
-    googleSearchQuery: string = '';
     downloadedImages: string[] = [];
 }
 
@@ -13,4 +12,5 @@ class Sentence {
     text: string = '';
     keywords: string[] = [];
     images: string[] = [];
+    googleSearchQuery: string = '';
 }
