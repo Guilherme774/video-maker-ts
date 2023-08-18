@@ -10,6 +10,7 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 export async function videoRobot() {
+    console.log('> [video-robot] Starting...');
     const content: Content = load();
 
     await convertAllImages(content);
@@ -18,11 +19,13 @@ export async function videoRobot() {
 
 
     async function convertAllImages(content: Content) {
-        console.log("> Editing images...");
+        console.log("> [video-robot] Editing images...");
 
         for(let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
             await convertImage(sentenceIndex);
         }
+
+        console.log('> [video-robot] Images converted!');
     }
 
     async function convertImage(sentenceIndex: number): Promise<void> {
@@ -36,23 +39,23 @@ export async function videoRobot() {
 
             exec(commandToRun, (error, stdout, stderr) => {
               if (error) {
-                  console.error(`[!] Error to convert image: ${error.message}`);
+                  console.error(`> [video-robot] [!] Error to convert image: ${error.message}`);
                   reject(error);
                   return;
               }
               if (stderr) {
-                  console.error(`Erro no STDERR: ${stderr}`);
+                  console.error(`> [video-robot] Erro no STDERR: ${stderr}`);
                   reject(new Error(stderr));
                   return;
               }
-              console.log(`> Image: ${sentenceIndex}-original.png - converted`);
+              console.log(`> [video-robot] Image: ${sentenceIndex}-original.png - converted`);
               resolve(); // Resolva a promessa quando a conversão estiver concluída.
             });
         })
     }
 
     async function createYouTubeThumbnail(): Promise<void> {
-        console.log('> Creating Youtube thumbnail...');
+        console.log('> [video-robot] Creating Youtube thumbnail...');
         
         return new Promise((resolve, reject) => {
             const filePath = '/sf/video-maker-ts/content/0-converted.png';
@@ -68,7 +71,7 @@ export async function videoRobot() {
                     console.error(`Erro no STDERR: ${stderr}`);
                     return;
                 }
-                console.log(`> Thumbnail created`);
+                console.log(`> [video-robot] Thumbnail created`);
                 resolve();
             });
         })
@@ -76,7 +79,7 @@ export async function videoRobot() {
 
 
     async function renderVideo(content: Content): Promise<void> {
-        console.log("> Starting video rendering...");
+        console.log("> [video-robot] Starting video rendering...");
         let images: any = [];
 
         return new Promise((resolve, reject) => {
@@ -123,16 +126,16 @@ export async function videoRobot() {
             .audio("/sf/video-maker-ts/content/audio.mp3")
             .save("/sf/video-maker-ts/content/video.mp4")
             .on("start", function(command: any) {
-              console.log("ffmpeg process started:", command);
+              console.log("> [video-robot] Rendering...");
             })
             .on("error", function(err: any, stdout: any, stderr: any) {
-              console.error("Error:", err);
-              console.error("ffmpeg stderr:", stderr);
+              console.error("> [video-robot] Error:", err);
+              console.error("> [video-robot] ffmpeg stderr:", stderr);
 
               reject(err);
             })
             .on("end", function(output: any) {
-              console.error("Video created in:", output);
+              console.error("> [video-robot] Video created in:", output);
               resolve();
           });
         })

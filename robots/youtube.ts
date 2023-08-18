@@ -9,6 +9,7 @@ const youtube = google.youtube({ version: 'v3' });
 const fs = require('fs');
 
 export async function youtubeRobot() {
+    console.log('> [youtube-robot] Starting...');
     const content: Content = load();
 
     await authenticatedWithOAuth();
@@ -17,6 +18,7 @@ export async function youtubeRobot() {
 
 
     async function authenticatedWithOAuth() {
+        console.log('> [youtube-robot] Authenticating...');
         const webServer = await startsWebServer();
         const OAuthClient = await createOAuthClient();
         await requestUserConsent(OAuthClient);
@@ -24,6 +26,8 @@ export async function youtubeRobot() {
         await requestGoogleForAccessTokens(OAuthClient, authorizationToken);
         await setGlobalGoogleAuthentication(OAuthClient);
         await stopWebServer(webServer);
+
+        console.log('> [youtube-robot] Authenticated!');
     }
 
     async function startsWebServer() {
@@ -60,12 +64,12 @@ export async function youtubeRobot() {
             scope: ['https://www.googleapis.com/auth/youtube']
         });
 
-        console.log(`> Please give your consent: ${consentUrl}`);
+        console.log(`> [youtube-robot] Please give your consent: ${consentUrl}`);
     }
 
     async function waitForGoogleCallback(webServer: any) {
         return new Promise((resolve, reject) => {
-            console.log('> Waiting for user consent...');
+            console.log('> [youtube-robot] Waiting for user consent...');
 
             webServer.app.get('/oauth2callback', (req: any, res: any) => {
                 const authCode = req.query.code;
@@ -84,7 +88,7 @@ export async function youtubeRobot() {
                     return reject(error);
                 }
 
-                console.log('> Access token received');
+                console.log('> [youtube-robot] Access token received');
                 // console.log(tokens);
 
                 OAuthClient.setCredentials(tokens);
@@ -109,6 +113,8 @@ export async function youtubeRobot() {
 
 
     async function uploadVideo(Content: Content) {
+        console.log('> [youtube-robot] Uploading video at Youtube...');
+
         const videoFilePath = '/sf/video-maker-ts/content/video.mp4';
         const videoFileSize = fs.statSync(videoFilePath).size;
         const videoTitle = `${content.prefix} ${content.searchTerm}`;
@@ -139,7 +145,7 @@ export async function youtubeRobot() {
             onUploadProgress: onUploadProgress
         });
 
-        console.log(`> Video available at: https://youtu.be/${youtubeResponse.data.id}`);
+        console.log(`> [youtube-robot] Video available at: https://youtu.be/${youtubeResponse.data.id}`);
         return youtubeResponse.data
 
         function onUploadProgress(event: any) {
@@ -149,6 +155,8 @@ export async function youtubeRobot() {
     }
 
     async function uploadThumbnail(videoInformation: any) {
+        console.log('> [youtube-robot] Uploading Thumbnail...');
+
         const videoId = videoInformation.id;
         const videoThumbnailFilePath = '/sf/video-maker-ts/content/youtube-thumbnail.jpg';
 
@@ -161,6 +169,6 @@ export async function youtubeRobot() {
         }
 
         const youtubeResponse = await youtube.thumbnails.set(requestParameters);
-        console.log(`> Thumbnail uploaded!`);
+        console.log(`> [youtube-robot] Thumbnail uploaded!`);
     }
 }

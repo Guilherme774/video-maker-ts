@@ -16,7 +16,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
 export async function textRobot() {
     const content: Content = load();
 
-    console.log(`> Searching for ${content.searchTerm} on internet...`);
+    console.log('> [text-robot] Starting...');
     await fetchContentFromWikipedia(content);
     breakContentIntoSentences(content);
     limitMaximumSentences(content);
@@ -26,11 +26,15 @@ export async function textRobot() {
 
 
     async function fetchContentFromWikipedia(content: Content) {
+        console.log(`> Searching for ${content.searchTerm} on internet...`);
+
         const wikipediaResponse = (await wiki().page(content.searchTerm).then(page => page.summary())).toString();
         const withoutDatesInParentheses = removeDatesInParentheses(wikipediaResponse);
 
         content.sourceContentOriginal = wikipediaResponse;
         content.sourceContentSanitized = withoutDatesInParentheses;
+
+        console.log('> Search completed!');
     }
 
     function removeDatesInParentheses(text: string) {
@@ -44,7 +48,8 @@ export async function textRobot() {
             content.sentences.push({
                 text: sentence,
                 keywords: [],
-                images: []
+                images: [],
+                googleSearchQuery: ''
             })
         }
     }
@@ -54,6 +59,8 @@ export async function textRobot() {
     }
 
     async function fetchWatsonAndReturnKeywords(sentence: string): Promise<any> {
+        console.log('> [text-robot] Fetching Watson for keywords...');
+
         return new Promise((resolve, reject) => {
             nlu.analyze({
                 text: sentence,
@@ -63,6 +70,7 @@ export async function textRobot() {
             })
             .then((response: any) => {
                 const keywords = response.result.keywords.map((keyword: any) => {
+                    // console.log(`> [text-robot] keyword: ${keyword.text}`);
                     return keyword.text;
                 })
 
