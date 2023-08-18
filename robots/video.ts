@@ -35,18 +35,19 @@ export async function videoRobot() {
             const commandToRun = `magick convert ${inputFile} -resize ${width}x${height} -gravity "Center" -extent ${width}x${height} ${outputFile}`;
 
             exec(commandToRun, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`[!] Error to convert image: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`Erro no STDERR: ${stderr}`);
-                return;
-            }
-            console.log(`> Image: ${sentenceIndex}-original.png - converted`);
+              if (error) {
+                  console.error(`[!] Error to convert image: ${error.message}`);
+                  reject(error);
+                  return;
+              }
+              if (stderr) {
+                  console.error(`Erro no STDERR: ${stderr}`);
+                  reject(new Error(stderr));
+                  return;
+              }
+              console.log(`> Image: ${sentenceIndex}-original.png - converted`);
+              resolve(); // Resolva a promessa quando a conversão estiver concluída.
             });
-
-            resolve();
         })
     }
 
@@ -68,68 +69,72 @@ export async function videoRobot() {
                     return;
                 }
                 console.log(`> Thumbnail created`);
+                resolve();
             });
-
-            resolve();
         })
     }
 
 
-    async function renderVideo(content: Content) {
+    async function renderVideo(content: Content): Promise<void> {
         console.log("> Starting video rendering...");
         let images: any = [];
 
-        for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
-          images.push({
-            path: `/sf/video-maker-ts/content/${sentenceIndex}-converted.png`,
-            caption: content.sentences[sentenceIndex].text
-          });
-        }
-    
-        const videoOptions = {
-          fps: 25,
-          loop: 5, // seconds
-          transition: true,
-          transitionDuration: 1, // seconds
-          videoBitrate: 1024,
-          videoCodec: "libx264",
-          size: "640x?",
-          audioBitrate: "128k",
-          audioChannels: 2,
-          format: "mp4",
-          pixelFormat: "yuv420p",
-          useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
-          subtitleStyle: {
-            Fontname: "Verdana",
-            Fontsize: "26",
-            PrimaryColour: "11861244",
-            SecondaryColour: "11861244",
-            TertiaryColour: "11861244",
-            BackColour: "-2147483640",
-            Bold: "2",
-            Italic: "0",
-            BorderStyle: "2",
-            Outline: "2",
-            Shadow: "3",
-            Alignment: "1", // left, middle, right
-            MarginL: "40",
-            MarginR: "60",
-            MarginV: "40"
+        return new Promise((resolve, reject) => {
+          for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
+            images.push({
+              path: `/sf/video-maker-ts/content/${sentenceIndex}-converted.png`,
+              caption: content.sentences[sentenceIndex].text
+            });
           }
-        };
-    
-        videoshow(images, videoOptions)
-          .audio("/sf/video-maker-ts/content/audio.mp3")
-          .save("/sf/video-maker-ts/content/video.mp4")
-          .on("start", function(command: any) {
-            console.log("ffmpeg process started:", command);
-          })
-          .on("error", function(err: any, stdout: any, stderr: any) {
-            console.error("Error:", err);
-            console.error("ffmpeg stderr:", stderr);
-          })
-          .on("end", function(output: any) {
-            console.error("Video created in:", output);
-        });
+      
+          const videoOptions = {
+            fps: 25,
+            loop: 5, // seconds
+            transition: true,
+            transitionDuration: 1, // seconds
+            videoBitrate: 1024,
+            videoCodec: "libx264",
+            size: "640x?",
+            audioBitrate: "128k",
+            audioChannels: 2,
+            format: "mp4",
+            pixelFormat: "yuv420p",
+            useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
+            subtitleStyle: {
+              Fontname: "Verdana",
+              Fontsize: "26",
+              PrimaryColour: "11861244",
+              SecondaryColour: "11861244",
+              TertiaryColour: "11861244",
+              BackColour: "-2147483640",
+              Bold: "2",
+              Italic: "0",
+              BorderStyle: "2",
+              Outline: "2",
+              Shadow: "3",
+              Alignment: "1", // left, middle, right
+              MarginL: "40",
+              MarginR: "60",
+              MarginV: "40"
+            }
+          };
+      
+          videoshow(images, videoOptions)
+            .audio("/sf/video-maker-ts/content/audio.mp3")
+            .save("/sf/video-maker-ts/content/video.mp4")
+            .on("start", function(command: any) {
+              console.log("ffmpeg process started:", command);
+            })
+            .on("error", function(err: any, stdout: any, stderr: any) {
+              console.error("Error:", err);
+              console.error("ffmpeg stderr:", stderr);
+
+              reject(err);
+            })
+            .on("end", function(output: any) {
+              console.error("Video created in:", output);
+              resolve();
+          });
+        })
     }
 }
